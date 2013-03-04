@@ -17,9 +17,14 @@
 # limitations under the License.
 #
 
-package "java" do
+rpm_package "java" do
   action :install
-  package_name "jre-7u15-linux-x64"
-  source "/tmp/rpms/jre-7u15-linux-x64.rpm"
-  provider Chef::Provider::Package::Rpm
+  case node['java']['arch']
+  when 'i586'
+    package_name node['java']['i586']['pkgname']
+    source node['java']['i586']['rpmpath']
+  when 'x86_64'
+    package_name node['java']['x86_64']['pkgname']
+    source node['java']['x86_64']['rpmpath']
+  end
 end
