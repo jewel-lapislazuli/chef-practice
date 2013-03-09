@@ -17,14 +17,24 @@
 # limitations under the License.
 #
 
-rpm_package "java" do
+arch = node["arch"]
+
+rpm_package "java-install" do
   action :install
-  case node['java']['arch']
-  when 'i586'
-    package_name node['java']['i586']['pkgname']
-    source node['java']['i586']['rpmpath']
-  when 'x86_64'
-    package_name node['java']['x86_64']['pkgname']
-    source node['java']['x86_64']['rpmpath']
+  
+  source node['java'][arch]['rpmpath']
+
+  only_if do
+    node["java"]["control"] == "install"
+  end
+end
+
+rpm_package "java-remove" do
+  action :remove
+  
+  package_name node["java"][arch]["pkgname"]
+
+  only_if do
+    node["java"]["control"] == "remove"
   end
 end
